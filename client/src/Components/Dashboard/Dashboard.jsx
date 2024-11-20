@@ -20,9 +20,9 @@ const StudentDashboard = () => {
     totalModules: 20,
     grade: "A-",
     quizzes: [
-      { name: "BEE Quiz", score: 90, status: "Completed" },
-      { name: "Matrices Quiz", score: 85, status: "Completed" },
-      { name: "Python Quiz", score: null, status: "Pending" },
+      { name: "BEE", score: 90, status: "Completed" },
+      { name: "communication skills", score: 85, status: "Completed" },
+      { name: "Engineering physics", score: null, status: "Pending" },
     ],
     lastActive: "2023-06-15T14:30:00Z",
   };

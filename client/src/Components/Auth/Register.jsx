@@ -11,7 +11,11 @@ const RegisterForm = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
+      //Note:THis is for user
       const response = await axios.post('/api/users/register', { username, password });
+
+
+      // Note:This is For admin
       // const response = await axios.post('/api/users/register', { username, password,isAdmin: true });
       const data = response.data;
       if (data.hasFound) {

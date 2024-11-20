@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../Layout/Layout";
+import confetti from "canvas-confetti"; // Import the canvas-confetti library
 
 const Quizzes = () => {
   // Quiz data organized semester-wise and subject-wise
@@ -70,6 +71,8 @@ const Quizzes = () => {
   };
 
   const handleSubmit = () => {
+    if (!selectedSemester || !selectedSubject) return; // Prevent submission if not selected
+
     const questions = quizData[selectedSemester][selectedSubject];
     let calculatedScore = 0;
 
@@ -80,15 +83,36 @@ const Quizzes = () => {
     setScore(calculatedScore);
   };
 
+  // Confetti effect when the score is full
+  useEffect(() => {
+    if (score === quizData[selectedSemester]?.[selectedSubject]?.length) {
+      // Trigger confetti when score is full
+      confetti({
+        particleCount: 600,
+        spread: 250,
+        origin: { y: 0.4 , x:0.5},
+        colors: ["#ff0", "#ff5a5f", "#a2ff0a", "#00f"],
+      });
+    }
+  }, [score, selectedSemester, selectedSubject]);
+
   return (
     <Layout>
-      <div className="quiz-container">
-        <h1 className="quiz-title">B.Tech CSE Quiz</h1>
+      <div className="quiz-container bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg rounded-xl p-8 max-w-3xl mx-auto mt-8">
+        <h1 className="quiz-title text-4xl font-extrabold text-center text-blue-700 mb-10">
+          B.Tech CSE Quiz
+        </h1>
 
         {/* Semester Selection */}
-        <div className="quiz-select">
-          <label>Select Semester:</label>
-          <select onChange={handleSemesterChange} value={selectedSemester}>
+        <div className="quiz-select mb-6">
+          <label className="text-lg font-semibold text-gray-800 block mb-2">
+            Select Semester:
+          </label>
+          <select
+            onChange={handleSemesterChange}
+            value={selectedSemester}
+            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all duration-200"
+          >
             <option value="">--Select--</option>
             {Object.keys(quizData).map((semester) => (
               <option key={semester} value={semester}>
@@ -100,116 +124,71 @@ const Quizzes = () => {
 
         {/* Subject Selection */}
         {selectedSemester && (
-          <div className="quiz-select">
-            <label>Select Subject:</label>
-            <select onChange={handleSubjectChange} value={selectedSubject}>
+          <div className="quiz-select mb-6">
+            <label className="text-lg font-semibold text-gray-800 block mb-2">
+              Select Subject:
+            </label>
+            <select
+              onChange={handleSubjectChange}
+              value={selectedSubject}
+              className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all duration-200"
+            >
               <option value="">--Select--</option>
-              {Object.keys(quizData[selectedSemester]).map((subject) => (
-                <option key={subject} value={subject}>
-                  {subject}
-                </option>
-              ))}
+              {selectedSemester &&
+                Object.keys(quizData[selectedSemester]).map((subject) => (
+                  <option key={subject} value={subject}>
+                    {subject}
+                  </option>
+                ))}
             </select>
           </div>
         )}
 
         {/* Questions */}
         {selectedSubject && (
-          <div className="quiz-questions">
-            {quizData[selectedSemester][selectedSubject].map((q, index) => (
-              <div key={index} className="question-card">
-                <h3>{q.question}</h3>
+          <div className="quiz-questions mt-10 space-y-8">
+            {quizData[selectedSemester]?.[selectedSubject]?.map((q, index) => (
+              <div
+                key={index}
+                className="question-card p-6 bg-white rounded-lg shadow-xl transition-all duration-300 hover:shadow-2xl"
+              >
+                <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                  {q.question}
+                </h3>
                 {q.options.map((option, i) => (
-                  <label key={i} className="option-label">
+                  <label
+                    key={i}
+                    className="option-label block mb-3 text-gray-700 flex items-center cursor-pointer hover:text-blue-500"
+                  >
                     <input
                       type="radio"
                       name={`question-${index}`}
                       value={option}
                       onChange={() => handleOptionChange(index, option)}
+                      className="mr-3 rounded-full text-blue-600 focus:ring-2 focus:ring-blue-500"
                     />
                     {option}
                   </label>
                 ))}
               </div>
             ))}
-            <button className="submit-btn" onClick={handleSubmit}>
-              Submit
+            <button
+              className="submit-btn w-full p-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none transition-all duration-200"
+              onClick={handleSubmit}
+            >
+              Submit Quiz
             </button>
           </div>
         )}
 
         {/* Score Display */}
         {score !== null && (
-          <div className="score-display">
-            You scored {score} out of{" "}
-            {quizData[selectedSemester][selectedSubject].length}!
+          <div className="score-display text-center mt-8 text-lg font-bold text-green-600">
+            You scored <span className="text-2xl">{score}</span> out of{" "}
+            <span className="text-2xl">{quizData[selectedSemester]?.[selectedSubject]?.length}</span>!
           </div>
         )}
       </div>
-
-      {/* Styles */}
-      <style jsx>{`
-        .quiz-container {
-          max-width: 800px;
-          margin: auto;
-          padding: 20px;
-          background: #f7f9fc;
-          border-radius: 10px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .quiz-title {
-          text-align: center;
-          color: #333;
-          margin-bottom: 20px;
-        }
-        .quiz-select {
-          margin-bottom: 20px;
-        }
-        .quiz-select label {
-          font-weight: bold;
-          margin-right: 10px;
-        }
-        .quiz-select select {
-          padding: 10px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
-        }
-        .quiz-questions {
-          margin-top: 20px;
-        }
-        .question-card {
-          padding: 20px;
-          background: #fff;
-          border-radius: 5px;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-          margin-bottom: 20px;
-        }
-        .option-label {
-          display: block;
-          margin: 10px 0;
-        }
-        .submit-btn {
-          display: block;
-          margin: 20px auto;
-          padding: 10px 20px;
-          background: #007bff;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 16px;
-        }
-        .submit-btn:hover {
-          background: #0056b3;
-        }
-        .score-display {
-          text-align: center;
-          font-size: 18px;
-          font-weight: bold;
-          color: green;
-          margin-top: 20px;
-        }
-      `}</style>
     </Layout>
   );
 };

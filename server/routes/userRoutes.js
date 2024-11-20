@@ -33,6 +33,7 @@ router.post('/register', async (req, res) => {
       username: user.username,
       token: token,
       isAdmin: user.isAdmin, // Return admin status
+      hasFound:true,
     });
   } else {
     res.status(400).json({ message: 'Invalid user data' });

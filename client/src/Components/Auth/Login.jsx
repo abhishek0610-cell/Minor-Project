@@ -18,7 +18,7 @@ const LoginForm = () => {
     setLoginError(''); // Reset login error message
 
     try {
-      const response = await axios.post('https://minor-project-backend-f25s.onrender.com/api/users/login', { username, password });
+      const response = await axios.get('https://minor-project-backend-f25s.onrender.com/api/users/login', { username, password });
       const data = response.data;
 
       if (data.hasFound) {

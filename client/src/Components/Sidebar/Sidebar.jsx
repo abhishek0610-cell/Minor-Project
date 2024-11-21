@@ -27,7 +27,7 @@ const Sidebar = () => {
           try {
             // Make the logout request with token and other details
             const { data } = await axios.post(
-              '/api/users/logout',
+              'https://minor-project-backend-f25s.onrender.com/api/users/logout',
               { isConfirm: true }, // Any necessary body data
               {
                 headers: {

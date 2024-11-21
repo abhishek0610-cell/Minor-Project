@@ -14,7 +14,7 @@ const RegisterForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/users/register', { username, password });
+      const response = await axios.post('https://minor-project-backend-f25s.onrender.com/api/users/register', { username, password });
       const data = response.data;
       if (data.hasFound) {
         localStorage.setItem('userData', JSON.stringify(data));
